@@ -8,8 +8,7 @@ known_languages = ["da", "de", "en", "es", "fi", "fr", "hu",
 
 def calc(sentence, langs, sniff_length):
     sentence = sentence.strip()
-    if sniff_length is not None:
-        sentence = sentence[:sniff_length]
+    sentence = sentence[:sniff_length]
     scores = {}
     total = 0
     for lang in langs:
@@ -40,7 +39,7 @@ def get_re(lang):
     return r
 
 
-def fastlang(sentence, languages=None, sniff_length=None):
+def fastlang(sentence, languages=None, sniff_length=1000):
     languages = known_languages if languages is None else languages
     return calc(sentence, languages, sniff_length)
 
