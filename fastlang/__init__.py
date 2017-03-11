@@ -6,14 +6,14 @@ known_languages = ["da", "de", "en", "es", "fi", "fr", "hu",
                    "it", "nl", "no", "pt", "ru", "sv", "tr"]
 
 
-def calc(sentence, langs, sniff_length):
+def calc(sentence, langs, extras, sniff_length):
     sentence = sentence.strip()
     sentence = sentence[:sniff_length]
     scores = {}
     total = 0
     for lang in langs:
         if lang not in languages_re:
-            languages_re[lang] = get_re(lang)
+            languages_re[lang] = get_re(lang, extras)
         lang_re = languages_re[lang]
         score = 0
         # can deal with large data
@@ -31,17 +31,19 @@ def calc(sentence, langs, sniff_length):
     return {"lang": lang, "probabilities": probs}
 
 
-def get_re(lang):
+def get_re(lang, extras):
     words = pkgutil.get_data("nltk_data", "{}.lang".format(lang.lower()))
     words = [x for x in words.decode("utf8").split("\n") if x]
+    if extras is not None:
+        words = words + extras[lang]
     r = r"\b" + r"\b|\b".join(words) + r"\b"
     r = re.compile(r, flags=re.IGNORECASE)
     return r
 
 
-def fastlang(sentence, languages=None, sniff_length=1000):
+def fastlang(sentence, languages=None, extras=None, sniff_length=1000):
     languages = known_languages if languages is None else languages
-    return calc(sentence, languages, sniff_length)
+    return calc(sentence, languages, extras, sniff_length)
 
 
 def accuracy(sentences, truths, languages=None):
