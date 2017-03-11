@@ -34,7 +34,7 @@ def calc(sentence, langs, extras, sniff_length):
 def get_re(lang, extras):
     words = pkgutil.get_data("nltk_data", "{}.lang".format(lang.lower()))
     words = [x for x in words.decode("utf8").split("\n") if x]
-    if extras is not None:
+    if extras is not None and lang in extras:
         words = words + extras[lang]
     r = r"\b" + r"\b|\b".join(words) + r"\b"
     r = re.compile(r, flags=re.IGNORECASE)
